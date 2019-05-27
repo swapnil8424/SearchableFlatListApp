@@ -7,7 +7,6 @@
  */
 
 import React, { Component } from 'react';
-import _ from "lodash";
 import FlatListSearch from './src/FlatListSearch';
 
 export default class App extends Component {
