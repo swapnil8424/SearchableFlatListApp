@@ -1,8 +1,8 @@
 import React from 'react'
 import { createStackNavigator, createAppContainer } from "react-navigation";
 
-import FlatListSearch from '../screens/FlatListSearch'
-import UserProfile from '../screens/UserProfile'
+import FlatListSearch from '../src/FlatListSearch'
+import UserProfile from '../src/UserProfile'
 
 // const ProfileStack = StackNavigator({
 //     List: {
@@ -25,10 +25,15 @@ import UserProfile from '../screens/UserProfile'
 
 const ProfileStackNavigator = createStackNavigator(
     {
-        List: FlatListSearch,
-        Profiles: UserProfile
+        List: {
+            screen: FlatListSearch
+        },
+        Profiles: {
+            screen: UserProfile
+        }    
     },
     {
+        headerMode : 'none',
         initialRouteName: "List"
     }
 )

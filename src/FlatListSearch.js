@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-
+import { Platform, StyleSheet, Text, View, FlatList, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { SearchBar, Avatar, ListItem } from 'react-native-elements'
 export class FlatListSearch extends Component {
     constructor(props) {
         super(props)
@@ -11,14 +12,13 @@ export class FlatListSearch extends Component {
         this.users = []
       }
     
-      // onLoadUser = (user) => {
-      //   this.props.navigation.navigate
-      // }
-      // onPress={(item)=>this.onLoadUser(item)}
+      onLoadUser = (user) => {
+        this.props.navigation.navigate('Profiles', {user: user})
+      }
     
       renderItem = ({ item }) => {
         return (
-          <TouchableOpacity style={styles.mainBox}>
+          <TouchableOpacity style={styles.mainBox} onPress={()=>this.onLoadUser(item)}>
             <View style={styles.picture}>
               <Avatar rounded size="medium" source={{ uri: item.picture.thumbnail }}></Avatar>
             </View>
@@ -117,6 +117,9 @@ const styles = StyleSheet.create({
     },
     text: {
       fontSize: 14,
+    },
+    box: {
+        flex: 1
     },
   
     mainBox: {

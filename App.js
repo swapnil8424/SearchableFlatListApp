@@ -7,11 +7,11 @@
  */
 
 import React, { Component } from 'react';
-import FlatListSearch from './src/FlatListSearch';
+import AppContainer from './config/router';
 
 export default class App extends Component {
   render(){
-    return <FlatListSearch/>
+    return <AppContainer />
   }
 }
 
