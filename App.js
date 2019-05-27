@@ -23,13 +23,13 @@ export default class App extends Component {
   }
 
   // onLoadUser = (user) => {
-  //   this.props.navigation.navigate('Profile', {...user});
+  //   this.props.navigation.navigate
   // }
-  //onPress={(item)=>this.onLoadUser(item)}
+  // onPress={(item)=>this.onLoadUser(item)}
 
   renderItem = ({ item }) => {
     return (
-      <TouchableOpacity style={styles.mainBox} >
+      <TouchableOpacity style={styles.mainBox}>
         <View style={styles.picture}>
           <Avatar rounded size="medium" source={{ uri: item.picture.thumbnail }}></Avatar>
         </View>
