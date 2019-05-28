@@ -1,8 +1,17 @@
 import React, { Component } from 'react'
 import { View, ScrollView } from 'react-native'
-import  { ListItem, Tile } from 'react-native-elements'
+import  { ListItem, Tile, Button } from 'react-native-elements'
 
 class UserProfile extends Component {
+    static navigationOptions = () => {
+        return {
+            title: "User Profile",
+            headerStyle: {
+                backgroundColor: "#5d8aa8"
+            },
+        }
+    }
+
     render() {
         console.log(this.props.navigation.state.params)
         const { user } = this.props.navigation.state.params;
