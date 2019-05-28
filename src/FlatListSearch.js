@@ -16,8 +16,10 @@ export class FlatListSearch extends Component {
 
     this.state = {
       data: [],
-      isLoading: true,
       page: 1,
+      seed: 1,
+      isLoading: true,
+      isRefreshing: false
     }
     this.users = []
   }
@@ -87,25 +89,47 @@ export class FlatListSearch extends Component {
     )
   }
 
+  handleRefresh = () => {
+    this.setState({
+      page: 1,
+      seed: this.state.seed + 1,
+      isRefreshing: true
+    }, ()=>this.fetchData())
+  }
+
+
   fetchData() {
-    // const url = "http://dummy.restapiexample.com/api/v1/employees"
-    // const url = "http://ergast.com/api/f1/2004/1/results.json"
-    const seed = 1
-    console.log(this.state.page)
-    const url = "https://randomuser.me/api/?seed=${seed}&&results=15&page="+this.state.page
+    const url = "https://randomuser.me/api/?seed="+this.state.seed + "&results=15&page="+this.state.page
+
+    this.state.isRefreshing ?
+      fetch(url)
+        .then((response) => response.json())
+        .then((responseJson) => {
+          this.setState({
+            data: responseJson.results, //this is for refresh 
+            isRefreshing: false,
+            isLoading: false
+          })
+          this.users = this.state.data;
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+    :
 
     fetch(url)
       .then((response) => response.json())
       .then((responseJson) => {
         this.setState({
-          data: this.state.data.concat(responseJson.results),
+          data: this.state.data.concat(responseJson.results), //this is for infinite scroll 
+          isRefreshing: false,
           isLoading: false
         })
         this.users = this.state.data;
       })
       .catch((error) => {
         console.log(error)
-      })
+      })   
   }
 
   componentDidMount() {
@@ -129,6 +153,8 @@ export class FlatListSearch extends Component {
             ListHeaderComponent={this.renderHeader}
             onEndReached={this.onLoadMore}
             onEndReachedThreshold={0.1}
+            refreshing = {this.state.isRefreshing}
+            onRefresh = {this.handleRefresh}
           />
         </View>
     );
