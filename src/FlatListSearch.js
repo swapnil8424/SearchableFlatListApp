@@ -4,7 +4,7 @@ import { SearchBar, Avatar, ListItem } from 'react-native-elements'
 export class FlatListSearch extends Component {
   static navigationOptions = () => {
     return {
-      title: 'All Users', 
+      title: 'All Users',
       headerStyle: {
         backgroundColor: "#318ce7"
       },
@@ -17,6 +17,7 @@ export class FlatListSearch extends Component {
     this.state = {
       data: [],
       isLoading: true,
+      page: 1,
     }
     this.users = []
   }
@@ -27,14 +28,16 @@ export class FlatListSearch extends Component {
 
   renderItem = ({ item }) => {
     return (
-      <TouchableOpacity style={styles.mainBox} onPress={() => this.onLoadUser(item)}>
-        <View style={styles.picture}>
-          <Avatar rounded size="medium" source={{ uri: item.picture.thumbnail }}></Avatar>
-        </View>
-        <View style={styles.infoPart}>
-          <View>
-            <Text style={styles.text}>Name: {item.name.title.charAt(0).toUpperCase() + item.name.title.slice(1)} {item.name.first.charAt(0).toUpperCase() + item.name.first.slice(1)} {item.name.last.charAt(0).toUpperCase() + item.name.last.slice(1)}</Text>
-            <Text style={styles.text}>Email: {item.email}</Text>
+      <TouchableOpacity onPress={() => this.onLoadUser(item)}>
+        <View style={styles.mainBox}>
+          <View style={styles.picture}>
+            <Avatar rounded size="medium" source={{ uri: item.picture.thumbnail }}></Avatar>
+          </View>
+          <View style={styles.infoPart}>
+            <View>
+              <Text style={styles.text}>Name: {item.name.title.charAt(0).toUpperCase() + item.name.title.slice(1)} {item.name.first.charAt(0).toUpperCase() + item.name.first.slice(1)} {item.name.last.charAt(0).toUpperCase() + item.name.last.slice(1)}</Text>
+              <Text style={styles.text}>Email: {item.email}</Text>
+            </View>
           </View>
         </View>
       </TouchableOpacity>
@@ -78,26 +81,37 @@ export class FlatListSearch extends Component {
     />)
   }
 
-  componentDidMount() {
+  onLoadMore = () => {
+    this.setState({page: this.state.page + 1},
+      this.fetchData
+    )
+  }
+
+  fetchData() {
     // const url = "http://dummy.restapiexample.com/api/v1/employees"
     // const url = "http://ergast.com/api/f1/2004/1/results.json"
     const seed = 1
-    const page = 1
-    const url = "https://randomuser.me/api/?seed=${seed}&page=${page}&results=30"
+    console.log(this.state.page)
+    const url = "https://randomuser.me/api/?seed=${seed}&&results=15&page="+this.state.page
 
     fetch(url)
       .then((response) => response.json())
       .then((responseJson) => {
         this.setState({
-          data: responseJson.results,
+          data: this.state.data.concat(responseJson.results),
           isLoading: false
         })
-        this.users = responseJson.results;
+        this.users = this.state.data;
       })
       .catch((error) => {
         console.log(error)
       })
   }
+
+  componentDidMount() {
+    this.fetchData()
+  }
+
 
   render() {
     return (
@@ -113,6 +127,8 @@ export class FlatListSearch extends Component {
             keyExtractor={i => i.email}
             ItemSeparatorComponent={this.renderSeparator}
             ListHeaderComponent={this.renderHeader}
+            onEndReached={this.onLoadMore}
+            onEndReachedThreshold={0.1}
           />
         </View>
     );
