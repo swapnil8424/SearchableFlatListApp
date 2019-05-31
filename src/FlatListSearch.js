@@ -83,8 +83,17 @@ export class FlatListSearch extends Component {
     />)
   }
 
+  renderFooter = () => {
+    return (
+      this.state.isLoading ?
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <ActivityIndicator size="large" color="#330066" animating></ActivityIndicator>
+        </View>
+        : null)
+  }
+
   onLoadMore = () => {
-    this.setState({page: this.state.page + 1},
+    this.setState({ page: this.state.page + 1 },
       this.fetchData
     )
   }
@@ -94,12 +103,12 @@ export class FlatListSearch extends Component {
       page: 1,
       seed: this.state.seed + 1,
       isRefreshing: true
-    }, ()=>this.fetchData())
+    }, () => this.fetchData())
   }
 
 
   fetchData() {
-    const url = "https://randomuser.me/api/?seed="+this.state.seed + "&results=15&page="+this.state.page
+    const url = "https://randomuser.me/api/?seed=" + this.state.seed + "&results=15&page=" + this.state.page
 
     this.state.isRefreshing ?
       fetch(url)
@@ -115,21 +124,21 @@ export class FlatListSearch extends Component {
         .catch((error) => {
           console.log(error)
         })
-    :
+      :
 
-    fetch(url)
-      .then((response) => response.json())
-      .then((responseJson) => {
-        this.setState({
-          data: this.state.data.concat(responseJson.results), //this is for infinite scroll 
-          isRefreshing: false,
-          isLoading: false
+      fetch(url)
+        .then((response) => response.json())
+        .then((responseJson) => {
+          this.setState({
+            data: this.state.data.concat(responseJson.results), //this is for infinite scroll 
+            isRefreshing: false,
+            isLoading: false
+          })
+          this.users = this.state.data;
         })
-        this.users = this.state.data;
-      })
-      .catch((error) => {
-        console.log(error)
-      })   
+        .catch((error) => {
+          console.log(error)
+        })
   }
 
   componentDidMount() {
@@ -151,10 +160,11 @@ export class FlatListSearch extends Component {
             keyExtractor={i => i.email}
             ItemSeparatorComponent={this.renderSeparator}
             ListHeaderComponent={this.renderHeader}
+            ListFooterComponent={this.renderFooter}
             onEndReached={this.onLoadMore}
             onEndReachedThreshold={0.1}
-            refreshing = {this.state.isRefreshing}
-            onRefresh = {this.handleRefresh}
+            refreshing={this.state.isRefreshing}
+            onRefresh={this.handleRefresh}
           />
         </View>
     );
